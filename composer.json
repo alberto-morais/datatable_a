@@ -1,0 +1,30 @@
+{
+    "name": "am2_tec/datatable_a",
+    "description": "Variacão do datatable editor php",
+    "type": "library",
+    "license": "MIT",
+    "repositories":[
+	     {
+	         "type": "vcs",
+	         "url" : "https://github.com/alberto-xitoss/datatable_a"
+	     }
+	],
+    "authors": [
+        {
+            "name": "Alberto Morais",
+            "email": "moraes_101@hotmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DataTables\\": ""
+        },
+        "files": [
+            "composer.php"
+        ]
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.3.0"
+    }
+}
