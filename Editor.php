@@ -2319,3 +2319,4 @@ class Editor extends Ext {
 	}
 }
 
+
