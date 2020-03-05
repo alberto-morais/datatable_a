@@ -1144,7 +1144,9 @@ class Editor extends Ext {
 			->query('select')
 			->table( $this->_read_table() );
             $this->removeQuotes($query);
-            $this->_pkey[0] = $this->_read_table()[0].'.'.$this->_pkey[0];
+            if(!strpos($this->_pkey[0],'.')){
+            	$this->_pkey[0] = $this->_read_table()[0].'.'.'id';
+            }
             $query->get($this->_pkey);
 
 		// Add all fields that we need to get from the database
@@ -2318,4 +2320,5 @@ class Editor extends Ext {
 			$this->_table;
 	}
 }
+
 
