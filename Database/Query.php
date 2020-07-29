@@ -870,7 +870,7 @@ class Query {
 	{
 		if ( !empty( $this->_orderField )) {
 		    $this->flagOrder = true;
-			return ' ORDER BY '. $this->_orderField.' , ';
+			return ' ORDER BY '. $this->_orderField;
 		}
 		return '';
 	}
