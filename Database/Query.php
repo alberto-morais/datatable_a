@@ -153,6 +153,7 @@ class Query {
 	 */
 	protected $_distinct = false;
 
+	protected $_distinctColumn = null;
 	/**
 	 * @var string
 	 * @internal
@@ -292,6 +293,12 @@ class Query {
 	public function distinct ( $dis )
 	{
 		$this->_distinct = $dis;
+		return $this;
+	}
+
+	public function distinctColumn ( $dis )
+	{
+		$this->_distinctColumn = $dis;
 		return $this;
 	}
 
@@ -1140,7 +1147,9 @@ class Query {
 	protected function _select()
 	{
 		$this->_prepare(
-			'SELECT '.($this->_distinct ? 'DISTINCT ' : '')
+			'SELECT '
+			.($this->_distinct ? 'DISTINCT ' : '')
+			.($this->_distinctColumn ? $this->_distinctColumn : '')
 			.$this->_build_field( true )
 			.'FROM '.$this->_build_table()
 			.$this->_build_inner()
@@ -1256,5 +1265,3 @@ class Query {
 		);
 	}
 };
-
-
