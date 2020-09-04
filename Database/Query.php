@@ -1264,4 +1264,4 @@ class Query {
 			"operator" => $op
 		);
 	}
-};
+}
