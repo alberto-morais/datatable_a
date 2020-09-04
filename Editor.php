@@ -228,6 +228,8 @@ class Editor extends Ext {
     /** @var callback */
     private $_validator = null;
 
+    private $_distinctConlumn = null;
+
     /** @var boolean Enable true / catch when processing */
     private $_tryCatch = true;
 
@@ -595,6 +597,23 @@ class Editor extends Ext {
         return $this->_getSet( $this->_pkey, $_ );
     }
 
+	public function distinct ($_=null)
+	{
+		return $this->_getSet( $this->_distinct, $_ );
+	}
+
+	public function distinctColumn ($column=null)
+	{
+
+		if(!empty($this->_distinctConlumn)){
+			$this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
+			$this->_distinctConlumn .= ",$column)";
+			return	$this;
+		}
+
+		$this->_distinctConlumn = "DISTINCT on ($column)";
+		return $this;
+	}
 
     /**
      * Convert a primary key array of field values to a combined value.
@@ -1141,14 +1160,17 @@ class Editor extends Ext {
         }
 
         $query = $this->_db
-            ->query('select')
+            ->query("select")
             ->table( $this->_read_table() );
+		$query->distinctColumn($this->_distinctConlumn);
         $this->removeQuotes($query);
         if(!strpos($this->_pkey[0],'.')){
             $this->_pkey[0] = $this->_read_table()[0].'.'.'id';
         }
         $query->get($this->_pkey);
 
+		if ($this->distinct())
+			$query->distinct(true);
         // Add all fields that we need to get from the database
         foreach ($this->_fields as $field) {
             // Don't reselect a pkey column if it was already added
@@ -1603,7 +1625,8 @@ class Editor extends Ext {
             ->query('select')
             ->table( $this->_read_table() );
         $ssp_set_count->get( 'COUNT('.$this->_pkey[0].') as cnt' );
-
+		if ($this->distinct())
+			$query->distinct(true);
         $this->_get_where( $ssp_set_count );
         $this->_ssp_filter( $ssp_set_count, $http );
         $this->_perform_inner_join( $ssp_set_count );
@@ -1615,6 +1638,8 @@ class Editor extends Ext {
             ->query('select')
             ->table( $this->_read_table() );
         $ssp_full_count->get( 'COUNT('.$this->_pkey[0].') as cnt' );
+		if ($this->distinct())
+			$query->distinct(true);
         $this->_get_where( $ssp_full_count );
         if ( count( $this->_where ) ) { // only needed if there is a where condition
             $this->_perform_left_join( $ssp_full_count );
