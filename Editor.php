@@ -1164,9 +1164,7 @@ class Editor extends Ext {
             ->table( $this->_read_table() );
 		$query->distinctColumn($this->_distinctConlumn);
         $this->removeQuotes($query);
-        if(!strpos($this->_pkey[0],'.')){
-            $this->_pkey[0] = $this->_read_table()[0].'.'.'id';
-        }
+
         $query->get($this->_pkey);
 
 		if ($this->distinct())
@@ -1720,9 +1718,17 @@ class Editor extends Ext {
 
                         if ( $field ) {
                             if( $http['search']['regex'] == 'like_1' ){
-                                $q->or_where( $field, ''.$http['search']['value'].'%', 'like' );
+                            	if ($this->_db->type == 'Postgres'){
+									$q->or_where( $field, ''.$http['search']['value'].'%', 'ilike' );
+								}else{
+									$q->or_where( $field, ''.$http['search']['value'].'%', 'like' );
+								}
                             }else{
-                                $q->or_where( $field, '%'.$http['search']['value'].'%', 'like' );
+                            	if ($this->_db->type == 'Postgres'){
+									$q->or_where( $field, '%'.$http['search']['value'].'%', 'Ilike' );
+								}else{
+									$q->or_where( $field, '%'.$http['search']['value'].'%', 'like' );
+								}
                             }
                         }
                     }

@@ -192,8 +192,9 @@ class Field extends DataTables\Ext
         }
         // Don't split on an `as` inside paraenthesis
         $a = preg_split('/ as (?![^\(]*\))/i', $_);
+
         if (count($a) > 1) {
-            $this->_dbField = trim($a[0]);
+            $this->_dbField = trim($a[0]) ." as ". $a[1];
             $this->_name = trim($a[1]);
         } else {
             $this->_dbField = $_;
