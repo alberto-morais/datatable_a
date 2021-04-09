@@ -586,6 +586,11 @@ class Field extends DataTables\Ext
      */
     public function val($direction, $data)
     {
+    	$a = preg_split('/ as (?![^\(]*\))/i', $this->_dbField);
+		if (sizeof($a) > 1){
+			$this->_dbField = $a[(sizeof($a) - 1)];
+		}
+		
         if ($direction === 'get') {
             if ($this->_getValue !== null) {
                 $val = $this->_getAssignedValue($this->_getValue);
