@@ -605,13 +605,20 @@ class Editor extends Ext {
 	public function distinctColumn ($column=null)
 	{
 
-		if(!empty($this->_distinctConlumn)){
-			$this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
-			$this->_distinctConlumn .= ",$column)";
-			return	$this;
+		if($this->_db->type == 'Mysql'){
+			if(!empty($this->_distinctConlumn)){
+				$this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
+				return	$this;
+			}
+			$this->_distinctConlumn = "DISTINCT ($column),";
+		}else{
+			if(!empty($this->_distinctConlumn)){
+				$this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
+				$this->_distinctConlumn .= ",$column)";
+				return	$this;
+			}
+			$this->_distinctConlumn = "DISTINCT on ($column)";
 		}
-
-		$this->_distinctConlumn = "DISTINCT on ($column)";
 		return $this;
 	}
 
@@ -1622,7 +1629,11 @@ class Editor extends Ext {
         $ssp_set_count = $this->_db
             ->query('select')
             ->table( $this->_read_table() );
-        $ssp_set_count->get( 'COUNT('.$this->_pkey[0].') as cnt' );
+        if ($this->_distinctConlumn){
+			$ssp_set_count->get( "COUNT($this->_distinctConlumn {$this->_pkey[0]}) as cnt");
+		}else{
+			$ssp_set_count->get( "COUNT({$this->_pkey[0]}) as cnt");
+		}
 		if ($this->distinct())
 			$query->distinct(true);
         $this->_get_where( $ssp_set_count );
@@ -1630,12 +1641,16 @@ class Editor extends Ext {
         $this->_perform_inner_join( $ssp_set_count );
         $this->_perform_left_join( $ssp_set_count );
         $ssp_set_count = $ssp_set_count->exec()->fetch();
-
         // Get the number of rows in the full set
         $ssp_full_count = $this->_db
             ->query('select')
             ->table( $this->_read_table() );
-        $ssp_full_count->get( 'COUNT('.$this->_pkey[0].') as cnt' );
+		if ($this->_distinctConlumn){
+			$ssp_full_count->get( "COUNT($this->_distinctConlumn {$this->_pkey[0]}) as cnt" );
+		}else{
+			$ssp_full_count->get( "COUNT({$this->_pkey[0]}) as cnt" );
+		}
+
 		if ($this->distinct())
 			$query->distinct(true);
         $this->_get_where( $ssp_full_count );
