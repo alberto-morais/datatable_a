@@ -1703,6 +1703,8 @@ class Editor extends Ext {
         for ( $i=0 ; $i<count($http['order']) ; $i++ ) {
             $order = $http['order'][$i];
             $name = $http['columns'][$order['column']]['data'];
+            $field = $this->_find_field( $name, 'name' );
+            $name = strtok($field->dbField(), ' ');
             $query->order(
                 $name .' '.
                 ($order['dir']==='asc' ? 'asc' : 'desc')
