@@ -504,14 +504,13 @@ class Query {
 
 			// Find the identifier so we don't escape that
 			if ( strpos($order[$i], ' ') !== false ) {
-				$direction = strstr($order[$i], ' ');
+				$direction = substr($order[$i], -4);
 				$identifier = substr($order[$i], 0, - strlen($direction));
 			}
 			else {
 				$direction = '';
 				$identifier = $order[$i];
 			}
-
 			$this->_order[] = $this->_protect_identifiers( $identifier ).' '.$direction;
 		}
 
@@ -862,6 +861,7 @@ class Query {
 	 */
 	protected function _build_order()
 	{
+
 		if ( count( $this->_order ) > 0 ) {
 		    if($this->flagOrder == true){
                 return ' '.implode(', ', $this->_order).' ';
@@ -877,7 +877,16 @@ class Query {
 	{
 		if ( !empty( $this->_orderField )) {
 		    $this->flagOrder = true;
-			return ' ORDER BY '. $this->_orderField;
+		    $order = '';
+		    foreach ($this->_orderField as $key => $value) {
+		    	$order .= $value . ' ';
+		    }
+		    
+		    if (!empty($this->_orderField) and sizeof($this->_orderField) > 1 and empty($this->_order)) {
+		    	$order = rtrim($order, ', ');
+		    }
+
+			return ' ORDER BY '. $order;
 		}
 		return '';
 	}
