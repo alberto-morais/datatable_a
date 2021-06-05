@@ -198,8 +198,8 @@ class Editor extends Ext {
     /** @var array */
     private $_group = array();
 
-    /** @var string */
-    private $_orderField = '';
+    /** @var array */
+    private $_orderField = [];
 
     /** @var array */
     private $_leftJoin = array();
@@ -971,7 +971,7 @@ class Editor extends Ext {
 
     public function orderField ( $order = '', $asc = 'asc' )
     {
-        $this->_orderField = $order. ' ' . $asc;
+        $this->_orderField[] = $order. ' ' . $asc .',';
         return $this;
     }
 
@@ -1625,7 +1625,6 @@ class Editor extends Ext {
         $this->_ssp_filter( $query, $http );
 
         // Get the number of rows in the result set
-//        dd($this);
         $ssp_set_count = $this->_db
             ->query('select')
             ->table( $this->_read_table() );
@@ -1703,9 +1702,9 @@ class Editor extends Ext {
     {
         for ( $i=0 ; $i<count($http['order']) ; $i++ ) {
             $order = $http['order'][$i];
-
+            $name = $http['columns'][$order['column']]['data'];
             $query->order(
-                $this->_ssp_field( $http, $order['column'] ) .' '.
+                $name .' '.
                 ($order['dir']==='asc' ? 'asc' : 'desc')
             );
         }
