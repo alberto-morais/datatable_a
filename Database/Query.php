@@ -864,7 +864,7 @@ class Query
                 $order .= $value . ' ';
             }
 
-            if (sizeof($this->_orderField) === 1 or empty($this->_order)) {
+            if (sizeof($this->_orderField) === 1 and empty($this->_order)) {
                 $order = rtrim($order, ', ');
             }
 
