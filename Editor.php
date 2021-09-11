@@ -1734,17 +1734,17 @@ class Editor extends Ext {
 
                         if ( $field ) {
                             if( $http['search']['regex'] == 'like_1' ){
-                            	if ($this->_db->type == 'Postgres'){
-									$q->or_where( $field, ''.$http['search']['value'].'%', 'ilike' );
-								}else{
-									$q->or_where( $field, ''.$http['search']['value'].'%', 'like' );
-								}
+                                if ($this->_db->type == 'Postgres'){
+                                    $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'ilike' );
+                                }else{
+                                    $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'like' );
+                                }
                             }else{
-                            	if ($this->_db->type == 'Postgres'){
-									$q->or_where( $field, '%'.$http['search']['value'].'%', 'Ilike' );
-								}else{
-									$q->or_where( $field, '%'.$http['search']['value'].'%', 'like' );
-								}
+                                if ($this->_db->type == 'Postgres'){
+                                    $q->or_where( "$field::text", '%'.$http['search']['value'].'%', 'Ilike' );
+                                }else{
+                                    $q->or_where( "$field::text", '%'.$http['search']['value'].'%', 'like' );
+                                }
                             }
                         }
                     }
