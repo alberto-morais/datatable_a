@@ -313,7 +313,7 @@ class Editor extends Ext {
      *      function:
      *
      *      * `null` - Get an array of all fields assigned to the instance
-     * 	    * `string` - Get a specific field instance whose 'name' matches the
+     *      * `string` - Get a specific field instance whose 'name' matches the
      *           field passed in
      *      * {@link Field} - Add a field to the instance's list of fields. This
      *           can be as many fields as required (i.e. multiple arguments)
@@ -597,30 +597,30 @@ class Editor extends Ext {
         return $this->_getSet( $this->_pkey, $_ );
     }
 
-	public function distinct ($_=null)
-	{
-		return $this->_getSet( $this->_distinct, $_ );
-	}
+    public function distinct ($_=null)
+    {
+        return $this->_getSet( $this->_distinct, $_ );
+    }
 
-	public function distinctColumn ($column=null)
-	{
+    public function distinctColumn ($column=null)
+    {
 
-		if($this->_db->type == 'Mysql'){
-			if(!empty($this->_distinctConlumn)){
-				$this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
-				return	$this;
-			}
-			$this->_distinctConlumn = "DISTINCT ($column),";
-		}else{
-			if(!empty($this->_distinctConlumn)){
-				$this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
-				$this->_distinctConlumn .= ",$column)";
-				return	$this;
-			}
-			$this->_distinctConlumn = "DISTINCT on ($column)";
-		}
-		return $this;
-	}
+        if($this->_db->type == 'Mysql'){
+            if(!empty($this->_distinctConlumn)){
+                $this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
+                return  $this;
+            }
+            $this->_distinctConlumn = "DISTINCT ($column),";
+        }else{
+            if(!empty($this->_distinctConlumn)){
+                $this->_distinctConlumn = rtrim($this->_distinctConlumn, ')');
+                $this->_distinctConlumn .= ",$column)";
+                return  $this;
+            }
+            $this->_distinctConlumn = "DISTINCT on ($column)";
+        }
+        return $this;
+    }
 
     /**
      * Convert a primary key array of field values to a combined value.
@@ -657,7 +657,7 @@ class Editor extends Ext {
             }
 
             if ( $val === null ) {
-//				throw new \Exception("Primary key element is not available in data set.", 1);
+//              throw new \Exception("Primary key element is not available in data set.", 1);
             }
 
             $id[] = $val;
@@ -1169,13 +1169,13 @@ class Editor extends Ext {
         $query = $this->_db
             ->query("select")
             ->table( $this->_read_table() );
-		$query->distinctColumn($this->_distinctConlumn);
+        $query->distinctColumn($this->_distinctConlumn);
         $this->removeQuotes($query);
 
         $query->get($this->_pkey);
 
-		if ($this->distinct())
-			$query->distinct(true);
+        if ($this->distinct())
+            $query->distinct(true);
         // Add all fields that we need to get from the database
         foreach ($this->_fields as $field) {
             // Don't reselect a pkey column if it was already added
@@ -1190,7 +1190,7 @@ class Editor extends Ext {
         $this->_get_where( $query);
         $query->inner( $this->_inner );
         $this->_perform_left_join( $query );
-//		$this->_perform_inner_join( $query );
+//      $this->_perform_inner_join( $query );
         $ssp = $this->_ssp_query( $query, $http );
 
         if ( $id !== null ) {
@@ -1629,12 +1629,12 @@ class Editor extends Ext {
             ->query('select')
             ->table( $this->_read_table() );
         if ($this->_distinctConlumn){
-			$ssp_set_count->get( "COUNT($this->_distinctConlumn {$this->_pkey[0]}) as cnt");
-		}else{
-			$ssp_set_count->get( "COUNT({$this->_pkey[0]}) as cnt");
-		}
-		if ($this->distinct())
-			$query->distinct(true);
+            $ssp_set_count->get( "COUNT($this->_distinctConlumn {$this->_pkey[0]}) as cnt");
+        }else{
+            $ssp_set_count->get( "COUNT({$this->_pkey[0]}) as cnt");
+        }
+        if ($this->distinct())
+            $query->distinct(true);
         $this->_get_where( $ssp_set_count );
         $this->_ssp_filter( $ssp_set_count, $http );
         $this->_perform_inner_join( $ssp_set_count );
@@ -1644,14 +1644,14 @@ class Editor extends Ext {
         $ssp_full_count = $this->_db
             ->query('select')
             ->table( $this->_read_table() );
-		if ($this->_distinctConlumn){
-			$ssp_full_count->get( "COUNT($this->_distinctConlumn {$this->_pkey[0]}) as cnt" );
-		}else{
-			$ssp_full_count->get( "COUNT({$this->_pkey[0]}) as cnt" );
-		}
+        if ($this->_distinctConlumn){
+            $ssp_full_count->get( "COUNT($this->_distinctConlumn {$this->_pkey[0]}) as cnt" );
+        }else{
+            $ssp_full_count->get( "COUNT({$this->_pkey[0]}) as cnt" );
+        }
 
-		if ($this->distinct())
-			$query->distinct(true);
+        if ($this->distinct())
+            $query->distinct(true);
         $this->_get_where( $ssp_full_count );
         if ( count( $this->_where ) ) { // only needed if there is a where condition
             $this->_perform_left_join( $ssp_full_count );
@@ -1734,14 +1734,23 @@ class Editor extends Ext {
 
                         if ( $field ) {
                             if( $http['search']['regex'] == 'like_1' ){
+                            dd(1);
                                 if ($this->_db->type == 'Postgres'){
-                                    $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'ilike' );
+                                    if ($http['columns'][$i]['name']){
+                                        $q->or_where( $http['columns'][$i]['name']."::text", ''.$http['search']['value'].'%', 'ilike' );
+                                    }else{
+                                        $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'ilike' );
+                                    }
                                 }else{
                                     $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'like' );
                                 }
                             }else{
                                 if ($this->_db->type == 'Postgres'){
-                                    $q->or_where( "$field::text", '%'.$http['search']['value'].'%', 'Ilike' );
+                                    if ($http['columns'][$i]['name']){
+                                        $q->or_where( $http['columns'][$i]['name']."::text", ''.$http['search']['value'].'%', 'ilike' );
+                                    }else{
+                                        $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'ilike' );
+                                    }
                                 }else{
                                     $q->or_where( "$field::text", '%'.$http['search']['value'].'%', 'like' );
                                 }
@@ -1753,26 +1762,26 @@ class Editor extends Ext {
         }
 
         // if ( $http['search']['value'] ) {
-        // 	$words = explode(" ", $http['search']['value']);
+        //  $words = explode(" ", $http['search']['value']);
 
-        // 	$query->where( function ($q) use (&$that, &$fields, $http, $words) {
-        // 		for ( $j=0, $jen=count($words) ; $j<$jen ; $j++ ) {
-        // 			if ( $words[$j] ) {
-        // 				$q->where_group( true );
+        //  $query->where( function ($q) use (&$that, &$fields, $http, $words) {
+        //      for ( $j=0, $jen=count($words) ; $j<$jen ; $j++ ) {
+        //          if ( $words[$j] ) {
+        //              $q->where_group( true );
 
-        // 				for ( $i=0, $ien=count($http['columns']) ; $i<$ien ; $i++ ) {
-        // 					if ( $http['columns'][$i]['searchable'] == 'true' ) {
-        // 						$field = $that->_ssp_field( $http, $i );
+        //              for ( $i=0, $ien=count($http['columns']) ; $i<$ien ; $i++ ) {
+        //                  if ( $http['columns'][$i]['searchable'] == 'true' ) {
+        //                      $field = $that->_ssp_field( $http, $i );
 
-        // 						$q->or_where( $field, $words[$j].'%', 'like' );
-        // 						$q->or_where( $field, '% '.$words[$j].'%', 'like' );
-        // 					}
-        // 				}
+        //                      $q->or_where( $field, $words[$j].'%', 'like' );
+        //                      $q->or_where( $field, '% '.$words[$j].'%', 'like' );
+        //                  }
+        //              }
 
-        // 				$q->where_group( false );
-        // 			}
-        // 		}
-        // 	} );
+        //              $q->where_group( false );
+        //          }
+        //      }
+        //  } );
         // }
 
         // Column filters
