@@ -1734,7 +1734,6 @@ class Editor extends Ext {
 
                         if ( $field ) {
                             if( $http['search']['regex'] == 'like_1' ){
-                            dd(1);
                                 if ($this->_db->type == 'Postgres'){
                                     if ($http['columns'][$i]['name']){
                                         $q->or_where( $http['columns'][$i]['name']."::text", ''.$http['search']['value'].'%', 'ilike' );
