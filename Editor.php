@@ -1741,7 +1741,7 @@ class Editor extends Ext {
                                         $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'ilike' );
                                     }
                                 }else{
-                                    $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'like' );
+                                    $q->or_where( "$field", ''.$http['search']['value'].'%', 'like' );
                                 }
                             }else{
                                 if ($this->_db->type == 'Postgres'){
@@ -1751,7 +1751,7 @@ class Editor extends Ext {
                                         $q->or_where( "$field::text", ''.$http['search']['value'].'%', 'ilike' );
                                     }
                                 }else{
-                                    $q->or_where( "$field::text", '%'.$http['search']['value'].'%', 'like' );
+                                    $q->or_where( "$field", '%'.$http['search']['value'].'%', 'like' );
                                 }
                             }
                         }
